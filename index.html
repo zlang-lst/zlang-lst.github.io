@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.zlang.tech","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="May the force be with me">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Zlang&#39;s T.B">
+<meta property="og:url" content="http://blog.zlang.tech/index.html">
+<meta property="og:site_name" content="Zlang&#39;s T.B">
+<meta property="og:description" content="May the force be with me">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="Leonidas.Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://blog.zlang.tech/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false
+  };
+</script>
+
+  <title>Zlang's T.B</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zlang's T.B</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Recording & Sharing</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.zlang.tech/2019/08/09/JMX/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zlang.jpg">
+      <meta itemprop="name" content="Leonidas.Z">
+      <meta itemprop="description" content="May the force be with me">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zlang's T.B">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/08/09/JMX/" class="post-title-link" itemprop="url">JMX整理</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-08-09 15:12:00" itemprop="dateCreated datePublished" datetime="2019-08-09T15:12:00+08:00">2019-08-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-07 21:17:56" itemprop="dateModified" datetime="2020-03-07T21:17:56+08:00">2020-03-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="JMX"><a href="#JMX" class="headerlink" title="JMX"></a>JMX</h1><p><strong>Java Management Extensions</strong></p>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>JMX是一个为应用植入监控及管理功能的框架；是一套标准的代理和服务。可以在任何Java应用中使用这些代理和服务。</p>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><p>中间件WebLogic的管理页面就是基于JMX开发的，而JBoss则整个系统都基于JMX构架。</p>
+<p>一个比较形象的关于Java开发的段子：</p>
+<ul>
+<li>菜鸟，系统配置参数写死在程序里，需要改变的时候就去修改代码，然后重新编译发布。</li>
+<li>熟手，系统配置参数写写在配置文件里，需要改变的时候只要修改配置文件，重启应用，以便读取配置文件里最新的值。</li>
+<li>好手，加一层缓存，把系统配置参数缓存起来，系统在获取的时候，先看看配置文件有没有改动，如有改动则重新从配置里读取，否则从缓存里读取。</li>
+<li>高手，利用JMX，使用MBean来管理系统配置参数。</li>
+</ul>
+<h2 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h2><p><img src="https://note.youdao.com/yws/api/personal/file/21D4AF5C94E1499DABF429BC586E2EAE?method=download&shareKey=51fbc67ef0e35eda74e2f90c330dd9f1" alt="image"></p>
+<h3 id="层级结构"><a href="#层级结构" class="headerlink" title="层级结构"></a>层级结构</h3><ul>
+<li><p><strong>设备层（Instrumentation Layer）</strong>- 定义信息模型</p>
+<p>什么是设备？从资源的角度来看，是对抽象资源的描述。比如说如果资源是数据库，管理组件中可以提供数据库的一些描述信息，比如数据库服务地址、端口，类型以及最大连接数等等，但是这些”抽象资源的描述“必须满足JMX规范的要求。</p>
+<p>设备层定义了如何实现JMX管理资源的规范。一个JMX管理资源可以是一个Java应用、一个服务或一个具体设备，它们可以用Java开发，或者至少能用Java进行包装，并且能被置入JMX框架中，从而成为JMX的一个管理构件(Managed  Bean)，简称MBean。</p>
+<blockquote>
+<p>在JMX规范中，MBean定义如下：是一个能代表管理资源的Java对象，遵从一定的设计模式，同时还需实现规范定义的特定的接口。规范保证了所有的管理构件以一种标准的方式来表示被管理资源。 管理接口就是被管理资源暴露出的一些信息，通过对这些信息的修改就能控制被管理资源。一个管理构件的管理接口包括：能被接触的属性值、能够执行的操作、能发出的通知事件以及管理构件的构建器。</p>
+</blockquote>
+<p>MBean有以下几种类型：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>standard MBean</td>
+<td>这种类型的MBean最简单，它能管理的资源（包括属性，方法，时间）必须定义在接口中，<br>然后MBean必须实现这个接口。它的命名也必须遵循一定的规范，例如我们的MBean为Abc，<br>则接口必须为AbcMBean。</td>
+</tr>
+<tr>
+<td>dynamic MBean</td>
+<td>必须实现javax.management.DynamicMBean接口，所有的属性，方法都在运行时定义。</td>
+</tr>
+<tr>
+<td>model MBean</td>
+<td>…</td>
+</tr>
+<tr>
+<td>MXBean</td>
+<td>实现xxxMXBean接口，或者不按照MXBean结尾来命名，但是需要加上@MXBean的注解，<br>支持各种数据类型，包括自定义类型。其他方法命名规则与MBean类似。</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<ul>
+<li><p><strong>代理层（Agent Layer）</strong>- 管理相应资源</p>
+<p>代理层主要定义了各种服务以及通信模型。该层的核心是 MBeanServer和一系列附加的Agent Service，MBean Server其实就是MBean的容器，可以注册Adapter、Connector、MBean并且直接管理MBean。所有的MBean都要向它注册，才能被管理。注册在MBeanServer上的MBean并不直接和远程应用程序进行通信，他们通过协议适配器（Adapter）和连接器（Connector）进行通信。通常Agent由一个MBeanServer和多个系统服务组成。</p>
+<blockquote>
+<p>代理层提供了4个Agent 服务：计时器（Timer）、监控（monitoring）、动态加载MBean（dynamic MBean loading ）、关系服务（relationship services ）</p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li><p><strong>分布层（Distributed Layer）</strong>- 适配接口</p>
+<p>分布层定义了一系列用来访问Agent的接口和组件，包括Adapter和Connector的描述。通过交互组件与JMX Agents建立连接后，用户可以用管理工具来和注册在Agents中的MBeans进行交互。</p>
+</li>
+</ul>
+<h2 id="API"><a href="#API" class="headerlink" title="API"></a>API</h2><p>JMX相关的API主要在以下两处：</p>
+<ul>
+<li><p>java.lang.management.*</p>
+</li>
+<li><p>javax.management.*</p>
+</li>
+</ul>
+<h2 id="JMX代码示例"><a href="#JMX代码示例" class="headerlink" title="JMX代码示例"></a>JMX代码示例</h2><ul>
+<li>standard MBean示例</li>
+</ul>
+<ol>
+<li>定义一个MBean接口，<strong>接口的命名规范为:具体的实现类为前缀+MBean</strong></li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> jmx;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">PersonMBean</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getAge</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAge</span><span class="params">(String age)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sayHello</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sayHello</span><span class="params">(String str)</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>定义一个实现类，实现上述的接口</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> jmx;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 该类名称必须与实现的接口的前缀保持一致（即MBean前面的名称)</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> <span class="keyword">implements</span> <span class="title">PersonMBean</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name = <span class="string">"Jack"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String age = <span class="string">"18"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sayHello</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"hello!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sayHello</span><span class="params">(String str)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"hello! "</span> + str);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"get name : "</span>+ name);</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"set name : "</span>+ name);</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getAge</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"get age : "</span>+ age);</span><br><span class="line">        <span class="keyword">return</span> age;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAge</span><span class="params">(String age)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"set age : "</span>+ age);</span><br><span class="line">        <span class="keyword">this</span>.age = age;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>定义agent层</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> jmx;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.management.JMException;</span><br><span class="line"><span class="keyword">import</span> javax.management.MBeanServer;</span><br><span class="line"><span class="keyword">import</span> javax.management.ObjectName;</span><br><span class="line"><span class="keyword">import</span> java.lang.management.ManagementFactory;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PersonAgent</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> JMException, Exception</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">//通过工厂类获取MBeanServer，用来做MBean的容器</span></span><br><span class="line">        MBeanServer server = ManagementFactory.getPlatformMBeanServer();</span><br><span class="line">        <span class="comment">//ObjectName中的取名是有一定规范的，格式为：“域名:name=MBean名称”，其中域名和MBean的名称可以任意取。这样定义后，就可以唯一标识我们定义的这个MBean的实现类了。</span></span><br><span class="line">        ObjectName objName = <span class="keyword">new</span> ObjectName(<span class="string">"jmxBean:name=Person"</span>);</span><br><span class="line">        <span class="comment">//创建并注册mbean</span></span><br><span class="line">        server.registerMBean(<span class="keyword">new</span> Person(), objName);</span><br><span class="line">        System.out.println(<span class="string">"Agent start"</span>);</span><br><span class="line">        Thread.sleep(<span class="number">60</span>*<span class="number">60</span>*<span class="number">1000</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>通过JMX提供的工具页访问管理MBean</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> jmx.adaptor;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.lang.management.ManagementFactory;</span><br><span class="line"><span class="keyword">import</span> javax.management.JMException;</span><br><span class="line"><span class="keyword">import</span> javax.management.MBeanServer;</span><br><span class="line"><span class="keyword">import</span> javax.management.ObjectName;</span><br><span class="line"><span class="keyword">import</span> com.sun.jdmk.comm.HtmlAdaptorServer;</span><br><span class="line"><span class="keyword">import</span> jmx.Person;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PersonAgent</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> JMException, Exception</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        MBeanServer server = ManagementFactory.getPlatformMBeanServer();</span><br><span class="line">        ObjectName objName = <span class="keyword">new</span> ObjectName(<span class="string">"jmxBean:name=Person"</span>);</span><br><span class="line">        <span class="comment">//创建并注册MBean</span></span><br><span class="line">        server.registerMBean(<span class="keyword">new</span> Person(), objName);</span><br><span class="line">        <span class="comment">//创建HtmlAdaptorServer</span></span><br><span class="line">        ObjectName adapterName = <span class="keyword">new</span> ObjectName(<span class="string">"PersonAgent:name=Htmladapter,port=8082"</span>);</span><br><span class="line">        HtmlAdaptorServer adapter = <span class="keyword">new</span> HtmlAdaptorServer();</span><br><span class="line">        server.registerMBean(adapter, adapterName);</span><br><span class="line">        adapter.start();</span><br><span class="line">        System.out.println(<span class="string">"HtmlAdaptorServer start"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：由于引入了com.sun.jdmk.comm.HtmlAdaptorServer，所以需要在pom.xml中设置</p>
+</blockquote>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.sun.jdmk<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jmxtools<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>通过 <a href="http://localhost:8082" target="_blank" rel="noopener">http://localhost:8082</a> 可以访问管理配置页面</p>
+<ul>
+<li>通过client端进行远程访问</li>
+</ul>
+<ol>
+<li>对Agent进行修改，增加JMXConnectorServer的监听</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> jmx.rmi;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> jmx.Person;</span><br><span class="line"><span class="keyword">import</span> javax.management.JMException;</span><br><span class="line"><span class="keyword">import</span> javax.management.MBeanServer;</span><br><span class="line"><span class="keyword">import</span> javax.management.ObjectName;</span><br><span class="line"><span class="keyword">import</span> javax.management.remote.JMXConnectorServer;</span><br><span class="line"><span class="keyword">import</span> javax.management.remote.JMXConnectorServerFactory;</span><br><span class="line"><span class="keyword">import</span> javax.management.remote.JMXServiceURL;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.lang.management.ManagementFactory;</span><br><span class="line"><span class="keyword">import</span> java.rmi.RemoteException;</span><br><span class="line"><span class="keyword">import</span> java.rmi.registry.LocateRegistry;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PersonAgent</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> JMException, Exception</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        MBeanServer server = ManagementFactory.getPlatformMBeanServer();</span><br><span class="line">        ObjectName objName = <span class="keyword">new</span> ObjectName(<span class="string">"jmxBean:name=Person"</span>);</span><br><span class="line">        <span class="comment">//create mbean and register mbean</span></span><br><span class="line">        server.registerMBean(<span class="keyword">new</span> Person(), objName);</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">//注册一个端口，绑定url后用于客户端通过rmi方式连接JMXConnectorServer</span></span><br><span class="line">            LocateRegistry.createRegistry(<span class="number">9999</span>);</span><br><span class="line">            <span class="comment">//URL路径的结尾可以随意指定，但如果需要用Jconsole来进行连接，则必须使用jmxrmi</span></span><br><span class="line">            JMXServiceURL url = <span class="keyword">new</span> JMXServiceURL(<span class="string">"service:jmx:rmi:///jndi/rmi://localhost:9999/jmxrmi"</span>);</span><br><span class="line">            JMXConnectorServer jcs = JMXConnectorServerFactory.newJMXConnectorServer(url, <span class="keyword">null</span>, server);</span><br><span class="line">            jcs.start();</span><br><span class="line">            System.out.println(<span class="string">"Agent start"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (RemoteException e)</span><br><span class="line">        &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (IOException e)</span><br><span class="line">        &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>客户端Client程序，用于与Agent进行远程连接</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> jmx.rmi;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> jmx.PersonMBean;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> javax.management.Attribute;</span><br><span class="line"><span class="keyword">import</span> javax.management.MBeanServerConnection;</span><br><span class="line"><span class="keyword">import</span> javax.management.MBeanServerInvocationHandler;</span><br><span class="line"><span class="keyword">import</span> javax.management.ObjectName;</span><br><span class="line"><span class="keyword">import</span> javax.management.remote.JMXConnector;</span><br><span class="line"><span class="keyword">import</span> javax.management.remote.JMXConnectorFactory;</span><br><span class="line"><span class="keyword">import</span> javax.management.remote.JMXServiceURL;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, Exception, NullPointerException</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        JMXServiceURL url = <span class="keyword">new</span> JMXServiceURL(<span class="string">"service:jmx:rmi:///jndi/rmi://localhost:9999/jmxrmi"</span>);</span><br><span class="line">        JMXConnector jmxc = JMXConnectorFactory.connect(url,<span class="keyword">null</span>);</span><br><span class="line">        MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();</span><br><span class="line">        System.out.println(<span class="string">"Domains ......"</span>);</span><br><span class="line">        String[] domains = mbsc.getDomains();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;domains.length;i++)</span><br><span class="line">        &#123;</span><br><span class="line">            System.out.println(<span class="string">"doumain["</span> + i + <span class="string">"]="</span> + domains[i] );</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">"MBean count = "</span> + mbsc.getMBeanCount());</span><br><span class="line"></span><br><span class="line">        <span class="comment">//ObjectName的名称与注册时候的保持一致</span></span><br><span class="line">        ObjectName mbeanName = <span class="keyword">new</span> ObjectName(<span class="string">"jmxBean:name=Person"</span>);</span><br><span class="line">        <span class="comment">//设置指定Mbean的特定属性值</span></span><br><span class="line">        <span class="comment">//这里的setAttribute、getAttribute操作只能针对bean的属性</span></span><br><span class="line">        <span class="comment">//例如对getName或者setName进行操作，只能使用Name，需要去除方法的前缀</span></span><br><span class="line">        String age = (String)mbsc.getAttribute(mbeanName, <span class="string">"Age"</span>);</span><br><span class="line">        String name = (String)mbsc.getAttribute(mbeanName, <span class="string">"Name"</span>);</span><br><span class="line">        System.out.println(<span class="string">"age="</span> + age + <span class="string">";name="</span> + name);</span><br><span class="line"></span><br><span class="line">        mbsc.setAttribute(mbeanName, <span class="keyword">new</span> Attribute(<span class="string">"Name"</span>,<span class="string">"Clark"</span>));</span><br><span class="line">        mbsc.setAttribute(mbeanName, <span class="keyword">new</span> Attribute(<span class="string">"Age"</span>,<span class="string">"22"</span>));</span><br><span class="line"></span><br><span class="line">        PersonMBean proxy = MBeanServerInvocationHandler.newProxyInstance(mbsc, mbeanName, PersonMBean<span class="class">.<span class="keyword">class</span>, <span class="title">false</span>)</span>;</span><br><span class="line">        proxy.sayHello();</span><br><span class="line">        proxy.sayHello(<span class="string">"Rose"</span>);</span><br><span class="line">        <span class="comment">//invoke调用bean的方法，只针对非设置属性的方法</span></span><br><span class="line">        <span class="comment">//例如invoke不能对getName方法进行调用</span></span><br><span class="line">        mbsc.invoke(mbeanName, <span class="string">"sayHello"</span>, <span class="keyword">new</span> String[]&#123;<span class="string">"I'll connect to JMX Server via client"</span>&#125;, <span class="keyword">new</span> String[]&#123;<span class="string">"java.lang.String"</span>&#125;);</span><br><span class="line">        mbsc.invoke(mbeanName, <span class="string">"sayHello"</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Notification - MBean之间的通信</li>
+</ul>
+<p>JMX 的通知由四部分组成：</p>
+<p>a) Notification这个相当于一个信息包，封装了需要传递的信息</p>
+<p>b) Notification broadcaster这个相当于一个广播器，把消息广播出</p>
+<p>c) Notification listener 这是一个监听器，用于监听广播出来的通知信息</p>
+<p>d) Notification filiter 这个一个过滤器，过滤掉不需要的通知。这个一般很少使用</p>
+<ol>
+<li>新创建一个资源ManMBean</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> jmx.notify;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span>  <span class="title">ManMBean</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">sayHi</span><span class="params">(String name)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>定义实现类</li>
+</ol>
+<blockquote>
+<p>注意Man还继承了NotificationBroadcasterSupport，在sayHi方法里创建并发送了一个消息包。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> jmx.notify;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.management.Notification;</span><br><span class="line"><span class="keyword">import</span> javax.management.NotificationBroadcasterSupport;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Man</span> <span class="keyword">extends</span> <span class="title">NotificationBroadcasterSupport</span> <span class="keyword">implements</span> <span class="title">ManMBean</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> seq = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sayHi</span><span class="params">(String name)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">//创建一个信息包 格式：通知名称，发起者，序列号，发起通知时间，发送的消息</span></span><br><span class="line">        Notification notify = <span class="keyword">new</span> Notification(<span class="string">"Man.sayHi"</span>,<span class="keyword">this</span>,++seq,System.currentTimeMillis(),name);</span><br><span class="line">        <span class="comment">//发送通知</span></span><br><span class="line">        sendNotification(notify);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>设置监听器</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> jmx.notify;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> jmx.Person;</span><br><span class="line"><span class="keyword">import</span> javax.management.Notification;</span><br><span class="line"><span class="keyword">import</span> javax.management.NotificationListener;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PersonListener</span> <span class="keyword">implements</span> <span class="title">NotificationListener</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleNotification</span><span class="params">(Notification notification, Object handback)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(handback <span class="keyword">instanceof</span> Person)</span><br><span class="line">        &#123;</span><br><span class="line">            Person person = (Person)handback;</span><br><span class="line">            person.sayHello(notification.getMessage());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>Agent</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> jmx.notify;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> jmx.Person;</span><br><span class="line"><span class="keyword">import</span> java.lang.management.ManagementFactory;</span><br><span class="line"><span class="keyword">import</span> javax.management.JMException;</span><br><span class="line"><span class="keyword">import</span> javax.management.MBeanServer;</span><br><span class="line"><span class="keyword">import</span> javax.management.ObjectName;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NotifyAgent</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> JMException, Exception</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        MBeanServer server = ManagementFactory.getPlatformMBeanServer();</span><br><span class="line">        ObjectName objectName = <span class="keyword">new</span> ObjectName(<span class="string">"Rose:name=Person"</span>);</span><br><span class="line">        Person person=<span class="keyword">new</span> Person();</span><br><span class="line">        server.registerMBean(person, objectName);</span><br><span class="line">        Man man = <span class="keyword">new</span> Man();</span><br><span class="line">        server.registerMBean(man, <span class="keyword">new</span> ObjectName(<span class="string">"Jack:name=Man"</span>));</span><br><span class="line">        <span class="comment">//绑定notification监听器</span></span><br><span class="line">        man.addNotificationListener(<span class="keyword">new</span> PersonListener(), <span class="keyword">null</span>, person);</span><br><span class="line">        System.out.println(<span class="string">"Agent start"</span>);</span><br><span class="line">        Thread.sleep(<span class="number">60</span>*<span class="number">60</span>*<span class="number">1000</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.zlang.tech/2019/02/14/Prometheus/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zlang.jpg">
+      <meta itemprop="name" content="Leonidas.Z">
+      <meta itemprop="description" content="May the force be with me">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zlang's T.B">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/02/14/Prometheus/" class="post-title-link" itemprop="url">Prometheus exporter开发说明</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-02-14 20:13:14" itemprop="dateCreated datePublished" datetime="2019-02-14T20:13:14+08:00">2019-02-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-04-02 14:44:50" itemprop="dateModified" datetime="2019-04-02T14:44:50+08:00">2019-04-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Prometheus/" itemprop="url" rel="index"><span itemprop="name">Prometheus</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><p>Prometheus将所有采集到的样本数据以时间序列（time series）的方式保存在内存中，并且定时持久化到硬盘上。
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/02/14/Prometheus/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.zlang.tech/2019/01/08/code_gen/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zlang.jpg">
+      <meta itemprop="name" content="Leonidas.Z">
+      <meta itemprop="description" content="May the force be with me">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zlang's T.B">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/01/08/code_gen/" class="post-title-link" itemprop="url">K8S code-generator代码生成说明</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-01-08 17:16:00" itemprop="dateCreated datePublished" datetime="2019-01-08T17:16:00+08:00">2019-01-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-09-17 09:47:54" itemprop="dateModified" datetime="2019-09-17T09:47:54+08:00">2019-09-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Kubernetes/" itemprop="url" rel="index"><span itemprop="name">Kubernetes</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>k8s.io/code-generator是K8S提供的一个代码生成器项目，可以用来生成通用代码模板。
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/01/08/code_gen/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.zlang.tech/2017/07/18/Portal/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zlang.jpg">
+      <meta itemprop="name" content="Leonidas.Z">
+      <meta itemprop="description" content="May the force be with me">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zlang's T.B">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/07/18/Portal/" class="post-title-link" itemprop="url">IOS系统终端连接WLAN Portal问题说明</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-07-18 09:36:00" itemprop="dateCreated datePublished" datetime="2017-07-18T09:36:00+08:00">2017-07-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-04-02 14:44:50" itemprop="dateModified" datetime="2019-04-02T14:44:50+08:00">2019-04-02</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Portal/" itemprop="url" rel="index"><span itemprop="name">Portal</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="CWP"><a href="#CWP" class="headerlink" title="CWP"></a>CWP</h1><p>在WIFI的应用场景中，有个很典型的应用，叫做<strong>Captive Portal</strong>，也叫<strong>Captive Web Portal (CWP)</strong>。
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/07/18/Portal/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+  </div>
+
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Leonidas.Z"
+      src="/images/zlang.jpg">
+  <p class="site-author-name" itemprop="name">Leonidas.Z</p>
+  <div class="site-description" itemprop="description">May the force be with me</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zlang-lst" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zlang-lst" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zlang.lst@gmail.com" title="E-Mail → mailto:zlang.lst@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备19005991号 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zlang</span>
+</div>
+  <div class="theme-info">主题 – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
