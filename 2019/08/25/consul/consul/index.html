@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/zlang.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/zlang.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/zlang.jpg">
+  <link rel="mask-icon" href="/images/zlang.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.zlang.tech","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="ConsulEventually or Strongly ConsistentConsul has two important subsystems, the service catalog and the gossip protocol. The service catalog stores all the nodes, service instances, health check data,">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Consul">
+<meta property="og:url" content="http://blog.zlang.tech/2019/08/25/consul/consul/index.html">
+<meta property="og:site_name" content="Zlang&#39;s T.B">
+<meta property="og:description" content="ConsulEventually or Strongly ConsistentConsul has two important subsystems, the service catalog and the gossip protocol. The service catalog stores all the nodes, service instances, health check data,">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-08-25T05:03:22.000Z">
+<meta property="article:modified_time" content="2020-03-08T05:45:33.260Z">
+<meta property="article:author" content="Leonidas.Z">
+<meta property="article:tag" content="registry">
+<meta property="article:tag" content="consul">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://blog.zlang.tech/2019/08/25/consul/consul/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>Consul | Zlang's T.B</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zlang's T.B</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Recording & Sharing</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.zlang.tech/2019/08/25/consul/consul/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zlang.jpg">
+      <meta itemprop="name" content="Leonidas.Z">
+      <meta itemprop="description" content="May the force be with me">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zlang's T.B">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Consul
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-08-25 13:03:22" itemprop="dateCreated datePublished" datetime="2019-08-25T13:03:22+08:00">2019-08-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-08 13:45:33" itemprop="dateModified" datetime="2020-03-08T13:45:33+08:00">2020-03-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Consul/" itemprop="url" rel="index"><span itemprop="name">Consul</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Consul"><a href="#Consul" class="headerlink" title="Consul"></a>Consul</h1><h2 id="Eventually-or-Strongly-Consistent"><a href="#Eventually-or-Strongly-Consistent" class="headerlink" title="Eventually or Strongly Consistent"></a>Eventually or Strongly Consistent</h2><p>Consul has two important subsystems, the <strong>service catalog</strong> and the <strong>gossip protocol</strong>. The service catalog stores all the nodes, service instances, health check data, ACLs, and KV information. It is <strong>strongly consistent</strong>, and replicated using the consensus protocol.</p>
+<p>The <strong>gossip protocol</strong> is used to track which nodes are part of the cluster and to detect a node or agent failure. This information is <strong>eventually consistent</strong> by nature. When the servers detects a change in membership, or receive a health update, they update the service catalog appropriately.</p>
+<p>Because of this split, the answer to the question is subtle. Almost all client APIs interact with the service catalog and are strongly consistent. Updates to the catalog may come via the gossip protocol which is eventually consistent, meaning the current state of the catalog can lag behind until the state is reconciled.<a id="more"></a></p>
+<h2 id="术语"><a href="#术语" class="headerlink" title="术语"></a>术语</h2><ul>
+<li><p><strong>Aent</strong></p>
+<blockquote>
+<p>Agent是一直运行在Consul集群中每个成员上的守护进程。通过运行 consul agent 来启动。Agent可以运行在client或者server模式。指定节点作为client或者server是非常简单的，除非有其他agent实例。所有的agent都能运行DNS或者HTTP接口，并负责运行时检查和保持服务同步。</p>
+</blockquote>
+</li>
+<li><p><strong>Client</strong></p>
+<blockquote>
+<p>Client是将所有rpc转发到server的代理。Client是相对无状态的。Client唯一执行的后台活动是加入LAN gossip pool。这仅有最小的资源开销，并且只消耗少量的网络带宽。</p>
+</blockquote>
+</li>
+<li><p><strong>Server</strong></p>
+<blockquote>
+<p>Server是具有扩展功能的代理，这些功能有：参与Raft选举，维护集群状态，响应RPC查询，与其他数据中心交互WAN gossip，以及转发查询给leader或者远程数据中心。</p>
+</blockquote>
+</li>
+<li><p><strong>Datacenter</strong></p>
+<blockquote>
+<p>虽然数据中心的定义是很明确的，但是有一些微妙细节必须考虑。例如，在EC2中，多个可用区域是否被认为组成一个数据中心？我们定义数据中心为一个私有的，低延迟和高带宽的一个网络环境。这就排除了穿越公共互联网的通信，但是出于我们的目的考虑，一个EC2区域内的多个可用性区域将被视为单个数据中心的一部分。</p>
+</blockquote>
+</li>
+<li><p><strong>Consensus</strong></p>
+<blockquote>
+<p>在Consul的术语中，使用Consensus表明leader选举的一致以及事务顺序的一致性。由于这些事务应用于有限状态机，Consensus的定义意味着复制状态机的一致性。</p>
+</blockquote>
+</li>
+<li><p><strong>Gossip</strong></p>
+<blockquote>
+<p>Consul建立在Serf的基础之上，它提供了一个用于多播目的的完整的gossip协议。Serf提供成员关系、故障检测和事件广播。（主要是通过UDP进行随机点到点的通信）</p>
+</blockquote>
+</li>
+<li><p><strong>LAN Gossip</strong></p>
+<blockquote>
+<p>指LAN gossip pool，包含所有位于同一局域网或数据中心上的节点。 </p>
+</blockquote>
+</li>
+<li><p><strong>WAN Gossip</strong></p>
+<blockquote>
+<p>指WAN gossip pool，只包含servers。这些servers分布在不同的数据中心，通常通过internet或广域网进行通信。 </p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li><strong>RPC</strong><blockquote>
+<p>远程过程调用。这是一种允许client向server发起request的的请求/响应机制。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="Gossip-Protocol"><a href="#Gossip-Protocol" class="headerlink" title="Gossip Protocol"></a>Gossip Protocol</h2><h3 id="Gossip-in-Consul"><a href="#Gossip-in-Consul" class="headerlink" title="Gossip in Consul"></a>Gossip in Consul</h3><p>Consul使用了两个gossip pools，LAN和WAN：</p>
+<ul>
+<li><p><strong>LAN pool</strong></p>
+<ul>
+<li>每个数据中心Consul都有一个LAN pool，其中包含数据中心的所有成员：clients和servers。</li>
+<li>Membership information允许客户端自动发现服务器，从而减少了所需的配置量。</li>
+<li>分布式故障检测允许整个集群共同承担故障检测工作，而不是集中在几个服务器上。</li>
+<li>提供可靠和快速的事件广播，如Leader选举。</li>
+</ul>
+</li>
+<li><p><strong>WAN pool</strong></p>
+<ul>
+<li>WAN池全局惟一，无论数据中心如何划分，所有servers(注意没有client)都参与到WAN池中。</li>
+<li>WAN池提供的Membership information允许servers执行跨数据中心请求。</li>
+<li>集成故障检测允许Consul优雅地处理丢失连接的整个数据中心，或者远程数据中心中的单个server。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Health-Check"><a href="#Health-Check" class="headerlink" title="Health Check"></a>Health Check</h3><ul>
+<li><p>Script+ Interval</p>
+</li>
+<li><p>HTTP+ Interval</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;check&quot;: &#123;</span><br><span class="line">    &quot;id&quot;: &quot;api&quot;,</span><br><span class="line">    &quot;name&quot;: &quot;HTTPAPI on port 5000&quot;,</span><br><span class="line">    &quot;http&quot;: &quot;http:&#x2F;&#x2F;localhost:5000&#x2F;health&quot;,</span><br><span class="line">    &quot;interval&quot;: &quot;10s&quot;,</span><br><span class="line">    &quot;timeout&quot;: &quot;1s&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">--------------------------------------------- </span><br><span class="line">&#123;</span><br><span class="line">  &quot;Check&quot;: &#123;</span><br><span class="line">    &quot;Node&quot;: &quot;simple_test&quot;,</span><br><span class="line">    &quot;CheckID&quot;: &quot;service:simple_test1&quot;,</span><br><span class="line">    &quot;Name&quot;: &quot;simple_test1 health check&quot;,</span><br><span class="line">    &quot;Status&quot;: &quot;passing&quot;,</span><br><span class="line">    &quot;ServiceID&quot;: &quot;simple_test1&quot;,</span><br><span class="line">    &quot;Definition&quot;: &#123;</span><br><span class="line">      &quot;HTTP&quot;: &quot;10.255.242.119:9999&quot;,</span><br><span class="line">      &quot;Interval&quot;: &quot;10s&quot;,</span><br><span class="line">      &quot;Timeout&quot;: &quot;5s&quot;,</span><br><span class="line">      &quot;DeregisterCriticalServiceAfter&quot;: &quot;60s&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>TCP + Interval</p>
+</li>
+<li><p>Time to Live（TTL）</p>
+</li>
+</ul>
+<h2 id="Install"><a href="#Install" class="headerlink" title="Install"></a>Install</h2><ul>
+<li><p>下载</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl --silent --remote-name https://releases.hashicorp.com/consul/1.5.1/consul_1.5.1_linux_amd64.zip</span><br></pre></td></tr></table></figure></li>
+<li><p>解压</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">unzip consul_1.5.1_linux_amd64.zip</span><br></pre></td></tr></table></figure></li>
+<li><p>初始化</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mv consul /usrl/<span class="built_in">local</span>/bin</span><br><span class="line">mkdir /etc/consul.d</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>测试</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">consul --version</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h2><table>
+<thead>
+<tr>
+<th align="left">Feature</th>
+<th align="center">Consul</th>
+<th align="center">Etcd</th>
+<th align="center">Zookeeper</th>
+<th align="center">Eureka</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>定位</strong></td>
+<td align="center">注册中心</td>
+<td align="center">KV存储</td>
+<td align="center">分布式协调</td>
+<td align="center">注册中心</td>
+</tr>
+<tr>
+<td align="left"><strong>编写语言</strong></td>
+<td align="center">Go</td>
+<td align="center">Go</td>
+<td align="center">Java</td>
+<td align="center">Java</td>
+</tr>
+<tr>
+<td align="left"><strong>KV存储</strong></td>
+<td align="center">支持</td>
+<td align="center">支持</td>
+<td align="center">支持</td>
+<td align="center">-</td>
+</tr>
+<tr>
+<td align="left"><strong>健康检查</strong></td>
+<td align="center">支持</td>
+<td align="center">支持</td>
+<td align="center">-</td>
+<td align="center">支持</td>
+</tr>
+<tr>
+<td align="left"><strong>多数据中心</strong></td>
+<td align="center">支持</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+</tr>
+<tr>
+<td align="left"><strong>Watch支持</strong></td>
+<td align="center">支持长轮询</td>
+<td align="center">支持长轮询</td>
+<td align="center">支持</td>
+<td align="center">支持长轮询</td>
+</tr>
+<tr>
+<td align="left"><strong>客户端支持</strong></td>
+<td align="center">http/dns</td>
+<td align="center">http/grpc</td>
+<td align="center">client binding</td>
+<td align="center">http/sidecar</td>
+</tr>
+<tr>
+<td align="left"><strong>CAP</strong></td>
+<td align="center">CP</td>
+<td align="center">CP</td>
+<td align="center">CP</td>
+<td align="center">AP</td>
+</tr>
+<tr>
+<td align="left"><strong>安全</strong></td>
+<td align="center">ACL/https</td>
+<td align="center">https</td>
+<td align="center">ACL</td>
+<td align="center">黑名单</td>
+</tr>
+<tr>
+<td align="left"><strong>Github star</strong></td>
+<td align="center">16004</td>
+<td align="center">25022</td>
+<td align="center">6370</td>
+<td align="center">7761</td>
+</tr>
+</tbody></table>
+<h2 id="Cluster-deploy"><a href="#Cluster-deploy" class="headerlink" title="Cluster deploy"></a>Cluster deploy</h2><ul>
+<li><p>Server : server-1  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">consul agent -server -bootstrap-expect=1 -data-dir=/tmp/consul -node=server-1 -<span class="built_in">bind</span>=10.255.242.112  -config-dir=/etc/consul.d -ui -client 0.0.0.0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Server : server-2  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">consul agent -server -data-dir=/tmp/consul -node=server-2 -<span class="built_in">bind</span>=10.255.242.113  -config-dir=/etc/consul.d -ui -client 0.0.0.0 -join 10.255.242.112</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Server : server-3  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">consul agent -server -data-dir=/tmp/consul -node=server-3 -<span class="built_in">bind</span>=10.255.242.114  -config-dir=/etc/consul.d -ui -client 0.0.0.0 -join 10.255.242.112</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Client : client-1  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">consul agent -data-dir=/tmp/consul -node=client-1 -<span class="built_in">bind</span>=10.255.242.115 -config-dir=/etc/consul.d -client 0.0.0.0 -join 10.255.242.112</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Client : client-2  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">consul agent -data-dir=/tmp/consul -node=client-2 -<span class="built_in">bind</span>=10.255.242.116 -config-dir=/etc/consul.d -client 0.0.0.0 -join 10.255.242.112</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>测试结果</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">consul operator raft list-peers</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Notice </li>
+</ul>
+<p>集群环境搭建时，注意在每个agent的主机上关闭防火墙</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl stop firewalld</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/registry/" rel="tag"># registry</a>
+              <a href="/tags/consul/" rel="tag"># consul</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/08/09/JMX/" rel="prev" title="JMX">
+      <i class="fa fa-chevron-left"></i> JMX
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/10/17/elastic-job/failover/" rel="next" title="elastic-job-lite issues 整理（一）">
+      elastic-job-lite issues 整理（一） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Consul"><span class="nav-number">1.</span> <span class="nav-text">Consul</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Eventually-or-Strongly-Consistent"><span class="nav-number">1.1.</span> <span class="nav-text">Eventually or Strongly Consistent</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#术语"><span class="nav-number">1.2.</span> <span class="nav-text">术语</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gossip-Protocol"><span class="nav-number">1.3.</span> <span class="nav-text">Gossip Protocol</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Gossip-in-Consul"><span class="nav-number">1.3.1.</span> <span class="nav-text">Gossip in Consul</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Health-Check"><span class="nav-number">1.3.2.</span> <span class="nav-text">Health Check</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Install"><span class="nav-number">1.4.</span> <span class="nav-text">Install</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对比"><span class="nav-number">1.5.</span> <span class="nav-text">对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Cluster-deploy"><span class="nav-number">1.6.</span> <span class="nav-text">Cluster deploy</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Leonidas.Z"
+      src="/images/zlang.jpg">
+  <p class="site-author-name" itemprop="name">Leonidas.Z</p>
+  <div class="site-description" itemprop="description">May the force be with me</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zlang-lst" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zlang-lst" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zlang.lst@gmail.com" title="E-Mail → mailto:zlang.lst@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备19005991号 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zlang</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

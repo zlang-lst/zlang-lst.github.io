@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/zlang.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/zlang.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/zlang.jpg">
+  <link rel="mask-icon" href="/images/zlang.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.zlang.tech","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="issues 类型组件版本冲突。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="elastic-job-lite issues 整理（四）">
+<meta property="og:url" content="http://blog.zlang.tech/2019/12/20/elastic-job/component-vc/index.html">
+<meta property="og:site_name" content="Zlang&#39;s T.B">
+<meta property="og:description" content="issues 类型组件版本冲突。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://note.youdao.com/yws/api/personal/file/21A781D9FA1F4A05BDC277D2B84808CA?method=download&shareKey=d64ea06ed5877e7b916f9031d02a32c8">
+<meta property="og:image" content="https://note.youdao.com/yws/api/personal/file/D2F900ADE2284CD7824433352A78736A?method=download&shareKey=1ec55f1297d852edb98f8506a314b3df">
+<meta property="article:published_time" content="2019-12-20T02:14:13.000Z">
+<meta property="article:modified_time" content="2020-03-08T05:34:59.188Z">
+<meta property="article:author" content="Leonidas.Z">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="elastic-job-lite">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://note.youdao.com/yws/api/personal/file/21A781D9FA1F4A05BDC277D2B84808CA?method=download&shareKey=d64ea06ed5877e7b916f9031d02a32c8">
+
+<link rel="canonical" href="http://blog.zlang.tech/2019/12/20/elastic-job/component-vc/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>elastic-job-lite issues 整理（四） | Zlang's T.B</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zlang's T.B</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Recording & Sharing</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.zlang.tech/2019/12/20/elastic-job/component-vc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zlang.jpg">
+      <meta itemprop="name" content="Leonidas.Z">
+      <meta itemprop="description" content="May the force be with me">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zlang's T.B">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          elastic-job-lite issues 整理（四）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-12-20 10:14:13" itemprop="dateCreated datePublished" datetime="2019-12-20T10:14:13+08:00">2019-12-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-08 13:34:59" itemprop="dateModified" datetime="2020-03-08T13:34:59+08:00">2020-03-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/elastic-job-lite/" itemprop="url" rel="index"><span itemprop="name">elastic-job-lite</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="issues-类型"><a href="#issues-类型" class="headerlink" title="issues 类型"></a>issues 类型</h1><p>组件版本冲突。<a id="more"></a></p>
+<h2 id="相关issue"><a href="#相关issue" class="headerlink" title="相关issue"></a>相关issue</h2><p><a href="https://github.com/elasticjob/elastic-job-lite/issues/698" target="_blank" rel="noopener">#698</a> <a href="https://github.com/elasticjob/elastic-job-lite/issues/590" target="_blank" rel="noopener">#590</a> <a href="https://github.com/elasticjob/elastic-job-lite/issues/475" target="_blank" rel="noopener">#475</a></p>
+<p>目前存在版本冲的组件主要是guava和curator</p>
+<h2 id="1-curator-framework-curator-client-curator-recipes"><a href="#1-curator-framework-curator-client-curator-recipes" class="headerlink" title="1. curator-framework/curator-client/curator-recipes"></a>1. curator-framework/curator-client/curator-recipes</h2><h3 id="1-1-zookeeper-版本"><a href="#1-1-zookeeper-版本" class="headerlink" title="1.1 zookeeper 版本"></a>1.1 zookeeper 版本</h3><p>Elastic-job-lite目前使用版本：3.4.6</p>
+<p>版本图</p>
+<p><img src="https://note.youdao.com/yws/api/personal/file/21A781D9FA1F4A05BDC277D2B84808CA?method=download&shareKey=d64ea06ed5877e7b916f9031d02a32c8" alt="image"></p>
+<p>比较常用的版本为3.4.X和3.5.X，但是3.5.X有多个版本为beta版。</p>
+<h3 id="1-2-curator版本"><a href="#1-2-curator版本" class="headerlink" title="1.2 curator版本"></a>1.2 curator版本</h3><p>Elastic-job-lite目前使用版本：2.10.0</p>
+<p>版本图</p>
+<p><img src="https://note.youdao.com/yws/api/personal/file/D2F900ADE2284CD7824433352A78736A?method=download&shareKey=1ec55f1297d852edb98f8506a314b3df" alt="image"></p>
+<h4 id="1-2-1-zookeeper-for-curator"><a href="#1-2-1-zookeeper-for-curator" class="headerlink" title="1.2.1 zookeeper for curator"></a>1.2.1 zookeeper for curator</h4><blockquote>
+<p><em>Curator 2.x.x - compatible with both ZooKeeper 3.4.x and ZooKeeper 3.5.x</em></p>
+</blockquote>
+<blockquote>
+<p><em>Curator 3.x.x - compatible only with ZooKeeper 3.5.x and includes support for new features such as dynamic reconfiguration, etc</em></p>
+</blockquote>
+<blockquote>
+<p><strong>Curator 4.x.x - has a hard dependency on ZooKeeper 3.5.x and  supports ZooKeeper 3.4.x ensembles in a soft-compatibility mode. To use this mode you must exclude ZooKeeper when adding Curator to your dependency management tool.</strong></p>
+</blockquote>
+<p>以上内容摘自curator官网以及相关资料。虽然curator 2.x 和 curator 4.x均能支持zk 3.4.x 以及 zk 3.5.x，但是建议选择curator 2.x版本，原因：</p>
+<ul>
+<li><ol>
+<li>Elastic-job-lite对于curator的依赖度不高，仅使用了少量的功能，新特性高级特性没怎么使用，后续还有去掉curator的考虑，所以不建议跨度过大的升级版本。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>Curator 4.x 对 zk 3.5.x 有硬依赖，zk 3.5.X有多个版本为beta版。且从目社区的issue来看，使用zk 3.4.x 并没有反馈太多的问题。</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>Elastic-job-lite目前使用的curator版本为2.10.0，curator在2.x版本中升级，出现兼容性问题的几率更小。</li>
+</ol>
+</li>
+</ul>
+<h4 id="1-2-2-guava-for-curator"><a href="#1-2-2-guava-for-curator" class="headerlink" title="1.2.2 guava for curator"></a>1.2.2 guava for curator</h4><p>curator 2.10.0 - 2.13.0版本中，使用guava的版本的都是 16.0.1</p>
+<p>官方也考虑到curator 中 guava 版本冲突的问题，所以从 2.12.0版本开始，curator就采用了maven-shade-plugin，将guava 集成到了curator的jar包中。</p>
+<p>官方说明：<a href="https://cwiki.apache.org/confluence/display/CURATOR/TN13" target="_blank" rel="noopener">Guava usage in Curator</a></p>
+<p><strong>apache-curator-2.13.0.pom</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-shade-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>apache-curator-guava-shader<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">goal</span>&gt;</span>shade<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">phase</span>&gt;</span>package<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">createDependencyReducedPom</span>&gt;</span>false<span class="tag">&lt;/<span class="name">createDependencyReducedPom</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">relocations</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">relocation</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>com.google<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">shadedPattern</span>&gt;</span>org.apache.curator.shaded.com.google<span class="tag">&lt;/<span class="name">shadedPattern</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>com.google.common.base.Function<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>com.google.common.base.Predicate<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>com.google.common.reflect.TypeToken<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">relocation</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">relocations</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactSet</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">includes</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">include</span>&gt;</span>$&#123;project.groupId&#125;:$&#123;project.artifactId&#125;<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">includes</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">artifactSet</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">filters</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">filter</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">artifact</span>&gt;</span>com.google.guava:guava<span class="tag">&lt;/<span class="name">artifact</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>META-INF/**<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">filters</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>Elastic-job要解决curator和guava版本冲突的问题，curator版本至少为2.12.0，否则无处理curator对于guava的依赖问题。</p>
+<h2 id="2-guava"><a href="#2-guava" class="headerlink" title="2. guava"></a>2. guava</h2><h3 id="2-1-guava-版本"><a href="#2-1-guava-版本" class="headerlink" title="2.1 guava 版本"></a>2.1 guava 版本</h3><p>Elastic-job-lite目前使用版本：16.0.1</p>
+<p>虽然eastic-job-lite的om中定义了guava的本为18.0</p>
+<p><strong>elastic-job-lite.pom</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">     ...</span><br><span class="line">    <span class="tag">&lt;<span class="name">guava.version</span>&gt;</span>18.0<span class="tag">&lt;/<span class="name">guava.version</span>&gt;</span></span><br><span class="line">    ...</span><br><span class="line"><span class="tag">&lt;/<span class="name">properties</span>&gt;</span>  </span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependencyManagement</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        ...</span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.google.guava<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>guava<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;guava.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencyManagement</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>但是在elastic-job-lite-core中没有引用dependencyManagement中声明的guava，而是沿用了curator依赖的guava，所以最终使用的guava版本为16.0.1</p>
+<h2 id="3-解决方案"><a href="#3-解决方案" class="headerlink" title="3. 解决方案"></a>3. 解决方案</h2><h3 id="3-1-modules情况"><a href="#3-1-modules情况" class="headerlink" title="3.1 modules情况"></a>3.1 modules情况</h3><p>elastic-job-lite中，我们需要解决组件版本冲突的module为：</p>
+<p>elastic-job-lite-core 和  elastic-job-lite-spring </p>
+<p>elastic-job-lite-lifecycle为console所需组件，elastic-job-lite-console为web console，独立运行，不会有组件冲突问题。</p>
+<ul>
+<li><p>elastic-job-lite-core ：需要考虑curator以及guava的冲突</p>
+</li>
+<li><p>elastic-job-lite-spring ：需要考虑及guava的冲突</p>
+</li>
+</ul>
+<h3 id="3-2-maven-shade-plugin"><a href="#3-2-maven-shade-plugin" class="headerlink" title="3.2 maven-shade-plugin"></a>3.2 maven-shade-plugin</h3><p><a href="http://maven.apache.org/plugins/maven-shade-plugin/" target="_blank" rel="noopener">maven-shade-plugin</a>是一个maven打包插件，可以将一个artifact以及其依赖打包成uber-jar，并且能对某些依赖重命名。</p>
+<blockquote>
+<p>This plugin provides the capability to package the artifact in an uber-jar, including its dependencies and to shade - i.e. rename - the packages of some of the dependencies.</p>
+</blockquote>
+<p><em>PS: 在很多编程语言中会把super叫做uber （因为suber可能是关键字）， 这是上世纪80年代开始流行的，比如管superman叫uberman。所以uber-jar从字面上理解就是super-jar，这样的jar不但包含自己代码中的class ，也会包含一些第三方依赖的jar，也就是把自身的代码和其依赖的jar全打包在一个jar里面了，所以就很形象的称其为super-jar 。</em></p>
+<p>目前解决jar包版本冲突比较通用的方式就是使用maven-shade-plugin。</p>
+<h3 id="3-3-调整思路"><a href="#3-3-调整思路" class="headerlink" title="==3.3 调整思路=="></a>==3.3 调整思路==</h3><p><strong>在elastic-job-lite中，新增两个modules：</strong></p>
+<ul>
+<li><p><strong>elastic-job-lite-core-shade</strong> ：elastic-job-lite-core的shade module，仅依赖elastic-job-lite-core及相关dependency，控制dependencydency的传递性，将elastic-job-lite-core和存在冲突的dependency包打包成uber-jar</p>
+</li>
+<li><p><strong>elastic-job-lite-spring-shade</strong> ：elastic-job-lite-spring的shade module，仅依赖elastic-job-lite-spring及相关dependency，控制dependencydency的传递性，将elastic-job-lite-spring和存在冲突的dependency包打包成uber-jar</p>
+</li>
+</ul>
+<p><strong>注意</strong>：不在elastic-job-lite-core和将elastic-job-lite-spring上直接调整的原因：</p>
+<ul>
+<li><ol>
+<li>新增比修改的影响更小，保留原有module不变，不会对引用原有module的项目带来影响</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>解决组件冲突，除了将所需的dependency打包到uber-jar中外，还需要控制dependency的传递性，直接在原module上改的话，改造量会较大，容易出现问题。如果在新的module上调整的话，会比较方便。</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>直接修改的话，elastic-job-lite编译会报错，因为elastic-job-lite-core会使用maven-shade-plugin的relocation的功能，导致对于guava的import会被rename，而elastic-job-lite-core中又定义了一些抽象类和接口，部分抽象类及接口的返回类型又定义了guava的对象，所以elastic-job-lite-spring在编译时，会报错。</li>
+</ol>
+</li>
+</ul>
+<p><strong>elastic-job-lite-core-shade.pom</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-shade-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">id</span>&gt;</span>elastic-job-guava-shader<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">goal</span>&gt;</span>shade<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">phase</span>&gt;</span>package<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">createDependencyReducedPom</span>&gt;</span>false<span class="tag">&lt;/<span class="name">createDependencyReducedPom</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">artifactSet</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">includes</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">include</span>&gt;</span>io.elasticjob:elastic-job-lite-core<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">include</span>&gt;</span>org.apache.curator:curator-framework<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">include</span>&gt;</span>org.apache.curator:curator-client<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">include</span>&gt;</span>org.apache.curator:curator-recipes<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">include</span>&gt;</span>com.google.guava:guava<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;/<span class="name">includes</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">artifactSet</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">filters</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">filter</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">artifact</span>&gt;</span>corg.apache.curator:curator-framework<span class="tag">&lt;/<span class="name">artifact</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>META-INF/**<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">filter</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">artifact</span>&gt;</span>org.apache.curator:curator-client<span class="tag">&lt;/<span class="name">artifact</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>META-INF/**<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">filter</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">artifact</span>&gt;</span>org.apache.curator:curator-recipes<span class="tag">&lt;/<span class="name">artifact</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>META-INF/**<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">filter</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">artifact</span>&gt;</span>com.google.guava:guava<span class="tag">&lt;/<span class="name">artifact</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>META-INF/**<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">filters</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">relocations</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">relocation</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>org.apache.curator<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">shadedPattern</span>&gt;</span>io.elasticjob.lite.shaded.org.apache.curator<span class="tag">&lt;/<span class="name">shadedPattern</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;/<span class="name">relocation</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">relocation</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>com.google<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">shadedPattern</span>&gt;</span>io.elasticjob.lite.shaded.com.google<span class="tag">&lt;/<span class="name">shadedPattern</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>com.google.gson.*<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;/<span class="name">relocation</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">relocations</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<p><strong>elastic-job-lite-spring-shade.pom</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-shade-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">goal</span>&gt;</span>shade<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">phase</span>&gt;</span>package<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">createDependencyReducedPom</span>&gt;</span>false<span class="tag">&lt;/<span class="name">createDependencyReducedPom</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">artifactSet</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">includes</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">include</span>&gt;</span>io.elasticjob:elastic-job-lite-spring<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">include</span>&gt;</span>com.google.guava:guava<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;/<span class="name">includes</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">artifactSet</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">filters</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">filter</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">artifact</span>&gt;</span>com.google.guava:guava<span class="tag">&lt;/<span class="name">artifact</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>META-INF/**<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">filters</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">relocations</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">relocation</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>com.google<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">shadedPattern</span>&gt;</span>io.elasticjob.lite.shaded.com.google<span class="tag">&lt;/<span class="name">shadedPattern</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;/<span class="name">relocation</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">relocations</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h2><p>总结一下上述涉及改造内容：</p>
+<ol>
+<li><p>升级curator版本为2.13.0（2.x系列版本最新版，且官方已经通过maven-shade-plugin解决了guava冲突问题）</p>
+</li>
+<li><p>升级zk版本为3.4.8（curator 2.13.0默认的zk版本为3.4.8）</p>
+</li>
+<li><p>去掉elastic-job-lie中dependencyManagement定义的guava，直接使用curator 2.13.0所依赖的guava 16.0.1</p>
+</li>
+<li><p>增加elastic-job-lite-core-shade以及elastic-job-lite-spring-shademodule（提供uber-jar，并收敛依赖）</p>
+</li>
+</ol>
+<h2 id="5-测试"><a href="#5-测试" class="headerlink" title="5. 测试"></a>5. 测试</h2><ol>
+<li><p>基本功能</p>
+</li>
+<li><p>分片功能</p>
+</li>
+<li><p>失效转移</p>
+</li>
+<li><p>zk版本切换</p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/elastic-job-lite/" rel="tag"># elastic-job-lite</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/04/elastic-job/resource-clean/" rel="prev" title="elastic-job-lite issues 整理（三）">
+      <i class="fa fa-chevron-left"></i> elastic-job-lite issues 整理（三）
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#issues-类型"><span class="nav-number">1.</span> <span class="nav-text">issues 类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#相关issue"><span class="nav-number">1.1.</span> <span class="nav-text">相关issue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-curator-framework-curator-client-curator-recipes"><span class="nav-number">1.2.</span> <span class="nav-text">1. curator-framework&#x2F;curator-client&#x2F;curator-recipes</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-zookeeper-版本"><span class="nav-number">1.2.1.</span> <span class="nav-text">1.1 zookeeper 版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-curator版本"><span class="nav-number">1.2.2.</span> <span class="nav-text">1.2 curator版本</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-1-zookeeper-for-curator"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">1.2.1 zookeeper for curator</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-2-guava-for-curator"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">1.2.2 guava for curator</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-guava"><span class="nav-number">1.3.</span> <span class="nav-text">2. guava</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-guava-版本"><span class="nav-number">1.3.1.</span> <span class="nav-text">2.1 guava 版本</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-解决方案"><span class="nav-number">1.4.</span> <span class="nav-text">3. 解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-modules情况"><span class="nav-number">1.4.1.</span> <span class="nav-text">3.1 modules情况</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-maven-shade-plugin"><span class="nav-number">1.4.2.</span> <span class="nav-text">3.2 maven-shade-plugin</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-调整思路"><span class="nav-number">1.4.3.</span> <span class="nav-text">&#x3D;&#x3D;3.3 调整思路&#x3D;&#x3D;</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-总结"><span class="nav-number">1.5.</span> <span class="nav-text">4. 总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-测试"><span class="nav-number">1.6.</span> <span class="nav-text">5. 测试</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Leonidas.Z"
+      src="/images/zlang.jpg">
+  <p class="site-author-name" itemprop="name">Leonidas.Z</p>
+  <div class="site-description" itemprop="description">May the force be with me</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zlang-lst" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zlang-lst" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zlang.lst@gmail.com" title="E-Mail → mailto:zlang.lst@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备19005991号 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zlang</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

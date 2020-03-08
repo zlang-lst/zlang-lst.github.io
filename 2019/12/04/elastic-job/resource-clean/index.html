@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/zlang.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/zlang.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/zlang.jpg">
+  <link rel="mask-icon" href="/images/zlang.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.zlang.tech","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="issues 类型资源释放，线程及内存回收问题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="elastic-job-lite issues 整理（三）">
+<meta property="og:url" content="http://blog.zlang.tech/2019/12/04/elastic-job/resource-clean/index.html">
+<meta property="og:site_name" content="Zlang&#39;s T.B">
+<meta property="og:description" content="issues 类型资源释放，线程及内存回收问题。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-12-04T01:21:20.000Z">
+<meta property="article:modified_time" content="2020-03-08T05:38:19.142Z">
+<meta property="article:author" content="Leonidas.Z">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="elastic-job-lite">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://blog.zlang.tech/2019/12/04/elastic-job/resource-clean/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>elastic-job-lite issues 整理（三） | Zlang's T.B</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zlang's T.B</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">Recording & Sharing</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://blog.zlang.tech/2019/12/04/elastic-job/resource-clean/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zlang.jpg">
+      <meta itemprop="name" content="Leonidas.Z">
+      <meta itemprop="description" content="May the force be with me">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zlang's T.B">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          elastic-job-lite issues 整理（三）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-12-04 09:21:20" itemprop="dateCreated datePublished" datetime="2019-12-04T09:21:20+08:00">2019-12-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-08 13:38:19" itemprop="dateModified" datetime="2020-03-08T13:38:19+08:00">2020-03-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/elastic-job-lite/" itemprop="url" rel="index"><span itemprop="name">elastic-job-lite</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="issues-类型"><a href="#issues-类型" class="headerlink" title="issues 类型"></a>issues 类型</h1><p>资源释放，线程及内存回收问题。<a id="more"></a></p>
+<h2 id="1-ReconcileService"><a href="#1-ReconcileService" class="headerlink" title="1. ReconcileService"></a>1. ReconcileService</h2><p>作业关闭时(通过console终止作业)，ReconcileService并没有正确停止，导致进程无法结束。</p>
+<p>社区中，有动态生成job的使用场景，封装参数配置，调用<code>JobScheduler.init()</code>生成多个作业。作业执行完成后，调用<code>SchedulerFacade.shutdownInstance()</code>终止作业调度，并释放相关资源。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 终止作业调度.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">shutdownInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (leaderService.isLeader()) &#123;</span><br><span class="line">        leaderService.removeLeader();</span><br><span class="line">    &#125;</span><br><span class="line">    monitorService.close();</span><br><span class="line">    <span class="keyword">if</span> (reconcileService.isRunning()) &#123;</span><br><span class="line">        reconcileService.stopAsync(); <span class="comment">//终止reconcileService服务</span></span><br><span class="line">    &#125;</span><br><span class="line">    JobRegistry.getInstance().shutdown(jobName);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>目前版本中通过console终止作业调度的话，无法正常停止<code>reconcileService</code>。所以在频繁的动态创建job的场景中，会因为<code>reconcileService</code>资源无法释放而导致内存泄露。</p>
+<h3 id="1-1-分析"><a href="#1-1-分析" class="headerlink" title="1.1 分析"></a>1.1 分析</h3><h4 id="JobScheduler"><a href="#JobScheduler" class="headerlink" title="JobScheduler"></a>JobScheduler</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="title">JobScheduler</span><span class="params">(<span class="keyword">final</span> CoordinatorRegistryCenter regCenter, <span class="keyword">final</span> LiteJobConfiguration liteJobConfig, <span class="keyword">final</span> JobEventBus jobEventBus, <span class="keyword">final</span> ElasticJobListener... elasticJobListeners)</span> </span>&#123;</span><br><span class="line">    ... <span class="comment">//省略部分代码</span></span><br><span class="line">    </span><br><span class="line">    schedulerFacade = <span class="keyword">new</span> SchedulerFacade(regCenter, liteJobConfig.getJobName(), elasticJobListenerList);</span><br><span class="line">    </span><br><span class="line">    ... <span class="comment">//省略部分代码</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 初始化作业.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ... <span class="comment">//省略部分代码</span></span><br><span class="line">    </span><br><span class="line">    schedulerFacade.registerStartUpInfo(!liteJobConfigFromRegCenter.isDisabled());</span><br><span class="line">    </span><br><span class="line">    ... <span class="comment">//省略部分代码</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="SchedulerFacade"><a href="#SchedulerFacade" class="headerlink" title="SchedulerFacade"></a>SchedulerFacade</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">SchedulerFacade</span><span class="params">(<span class="keyword">final</span> CoordinatorRegistryCenter regCenter, <span class="keyword">final</span> String jobName, <span class="keyword">final</span> List&lt;ElasticJobListener&gt; elasticJobListeners)</span> </span>&#123;</span><br><span class="line">    ... <span class="comment">//省略部分代码</span></span><br><span class="line"></span><br><span class="line">    listenerManager = <span class="keyword">new</span> ListenerManager(regCenter, jobName, elasticJobListeners, <span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 注册作业启动信息.</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> enabled 作业是否启用</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerStartUpInfo</span><span class="params">(<span class="keyword">final</span> <span class="keyword">boolean</span> enabled)</span> </span>&#123;</span><br><span class="line">    ... <span class="comment">//省略部分代码</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (!reconcileService.isRunning()) &#123;</span><br><span class="line">        reconcileService.startAsync();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ... <span class="comment">//省略部分代码</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 终止作业调度.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">shutdownInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ... <span class="comment">//省略部分代码</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (reconcileService.isRunning()) &#123;</span><br><span class="line">        reconcileService.stopAsync();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ... <span class="comment">//省略部分代码</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="ListenerManager"><a href="#ListenerManager" class="headerlink" title="ListenerManager"></a>ListenerManager</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ListenerManager</span><span class="params">(<span class="keyword">final</span> CoordinatorRegistryCenter regCenter, <span class="keyword">final</span> String jobName, <span class="keyword">final</span> List&lt;ElasticJobListener&gt; elasticJobListeners)</span> </span>&#123;</span><br><span class="line">    ... <span class="comment">//省略部分代码</span></span><br><span class="line">    </span><br><span class="line">    shutdownListenerManager = <span class="keyword">new</span> ShutdownListenerManager(regCenter, jobName);</span><br><span class="line">    </span><br><span class="line">    ... <span class="comment">//省略部分代码</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="ShutdownListenerManager"><a href="#ShutdownListenerManager" class="headerlink" title="ShutdownListenerManager"></a>ShutdownListenerManager</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ShutdownListenerManager</span><span class="params">(<span class="keyword">final</span> CoordinatorRegistryCenter regCenter, <span class="keyword">final</span> String jobName)</span> </span>&#123;</span><br><span class="line">    ... <span class="comment">//省略部分代码</span></span><br><span class="line">    </span><br><span class="line">    schedulerFacade = <span class="keyword">new</span> SchedulerFacade(regCenter, jobName);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">InstanceShutdownStatusJobListener</span> <span class="keyword">extends</span> <span class="title">AbstractJobListener</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">dataChanged</span><span class="params">(<span class="keyword">final</span> String path, <span class="keyword">final</span> Type eventType, <span class="keyword">final</span> String data)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!JobRegistry.getInstance().isShutdown(jobName) &amp;&amp; !JobRegistry.getInstance().getJobScheduleController(jobName).isPaused()</span><br><span class="line">                &amp;&amp; isRemoveInstance(path, eventType) &amp;&amp; !isReconnectedRegistryCenter()) &#123;</span><br><span class="line">            schedulerFacade.shutdownInstance();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ... <span class="comment">//省略部分代码</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，在<code>ShutdownListenerManager</code>的构造函数中，新创建了一个<code>SchedulerFacade</code>实例，通过console触发终止作业操作时，新创建的<code>SchedulerFacade</code>实例无法终止实际运行的<code>reconcileService</code>，因为<code>reconcileService</code>实例也是新创建的，其<code>state</code>始终是==NEW==。</p>
+<h3 id="1-2-改造"><a href="#1-2-改造" class="headerlink" title="1.2 改造"></a>1.2 改造</h3><h4 id="1-2-1-消除SchedulerFacade实例的多次创建"><a href="#1-2-1-消除SchedulerFacade实例的多次创建" class="headerlink" title="1.2.1 消除SchedulerFacade实例的多次创建"></a>1.2.1 消除SchedulerFacade实例的多次创建</h4><ul>
+<li><p><strong>ShutdownListenerManager</strong> 的初始化过程中不要创建新的<code>SchedulerFacade</code>实例，<code>SchedulerFacade</code>的引用通过新增的<code>setSchedulerFacade</code>方法来设置。</p>
+</li>
+<li><p><strong>ListenerManager</strong> 的<code>startAllListeners</code>方法中，在<code>shutdownListenerManager.start();</code>执行前，增加<code>ShutdownListenerManager.setSchedulerFacade</code>方法的调用。</p>
+</li>
+<li><p><strong>SchedulerFacade</strong> 通过<code>registerStartUpInfo</code>方法，将<code>SchedulerFacade</code>的引用向下传递。</p>
+</li>
+</ul>
+<h4 id="1-2-2-全局化的ReconcileServiceManager"><a href="#1-2-2-全局化的ReconcileServiceManager" class="headerlink" title="1.2.2. 全局化的ReconcileServiceManager"></a>1.2.2. 全局化的ReconcileServiceManager</h4><ul>
+<li><p>构建一个单例模式的<code>ReconcileServiceManager</code></p>
+</li>
+<li><p><code>ReconcileServiceManager</code>中创建一个存储结构（比如Map），注册作业时，将registryCneter和jobName作为key，将<code>reconcileService</code>作为value，对应存储到存储结构中。</p>
+</li>
+<li><p>终止作业时，从<code>ReconcileServiceManager</code>中停止并删除registryCneter和jobName作为key对应的<code>reconcileService</code></p>
+</li>
+</ul>
+<hr>
+<h2 id="2-RegistryCenterConnectionStateListener"><a href="#2-RegistryCenterConnectionStateListener" class="headerlink" title="2. RegistryCenterConnectionStateListener"></a>2. RegistryCenterConnectionStateListener</h2><p>作业终止时，RegistryCenterConnectionStateListener资源没有释放。</p>
+<p>社区中，有动态生成job的使用场景，封装参数配置，调用<code>JobScheduler.init()</code>生成多个作业。作业执行完成后，调用<code>SchedulerFacade.shutdownInstance()</code>终止作业调度，并释放相关资源。</p>
+<p>目前版本终止作业调度的话，<code>RegistryCenterConnectionStateListener</code>相关的资源并没有注销释放。所以在频繁的动态创建job的场景中，会存在内存泄露的隐患。</p>
+<h3 id="2-1-分析"><a href="#2-1-分析" class="headerlink" title="2.1 分析"></a>2.1 分析</h3><h4 id="SchedulerFacade-1"><a href="#SchedulerFacade-1" class="headerlink" title="SchedulerFacade"></a>SchedulerFacade</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">SchedulerFacade</span><span class="params">(<span class="keyword">final</span> CoordinatorRegistryCenter regCenter, <span class="keyword">final</span> String jobName, <span class="keyword">final</span> List&lt;ElasticJobListener&gt; elasticJobListeners)</span> </span>&#123;</span><br><span class="line">    ... <span class="comment">//省略部分代码</span></span><br><span class="line"></span><br><span class="line">    listenerManager = <span class="keyword">new</span> ListenerManager(regCenter, jobName, elasticJobListeners, <span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 注册作业启动信息.</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> enabled 作业是否启用</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerStartUpInfo</span><span class="params">(<span class="keyword">final</span> <span class="keyword">boolean</span> enabled)</span> </span>&#123;</span><br><span class="line">    listenerManager.startAllListeners();</span><br><span class="line">    </span><br><span class="line">    ... <span class="comment">//省略部分代码</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 终止作业调度.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">shutdownInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (leaderService.isLeader()) &#123;</span><br><span class="line">        leaderService.removeLeader();</span><br><span class="line">    &#125;</span><br><span class="line">    monitorService.close();</span><br><span class="line">    <span class="keyword">if</span> (reconcileService.isRunning()) &#123;</span><br><span class="line">        reconcileService.stopAsync(); <span class="comment">//终止reconcileService服务</span></span><br><span class="line">    &#125;</span><br><span class="line">    JobRegistry.getInstance().shutdown(jobName);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="ListenerManager-1"><a href="#ListenerManager-1" class="headerlink" title="ListenerManager"></a>ListenerManager</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ListenerManager</span><span class="params">(<span class="keyword">final</span> CoordinatorRegistryCenter regCenter, <span class="keyword">final</span> String jobName, <span class="keyword">final</span> List&lt;ElasticJobListener&gt; elasticJobListeners, <span class="keyword">final</span> SchedulerFacade schedulerFacade)</span> </span>&#123;</span><br><span class="line">        ... <span class="comment">//省略部分代码</span></span><br><span class="line">        </span><br><span class="line">        regCenterConnectionStateListener = <span class="keyword">new</span> RegistryCenterConnectionStateListener(regCenter, jobName);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 开启所有监听器.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startAllListeners</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ... <span class="comment">//省略部分代码</span></span><br><span class="line">        </span><br><span class="line">        jobNodeStorage.addConnectionStateListener(regCenterConnectionStateListener);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">```   </span><br><span class="line"></span><br><span class="line">在```ListenerManager.startAllListeners()```中，注册了```regCenterConnectionStateListener```但是在终止作业调度时，并没有注销```regCenterConnectionStateListener```。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### 2.2 改造</span><br><span class="line"></span><br><span class="line">#### 终止作业调度时注销RegCenterConnectionStateListener</span><br><span class="line"></span><br><span class="line">- **ListenerManager** 增加注销监听器的方法。</span><br><span class="line"></span><br><span class="line">```java</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 注销监听器.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeRegCenterConnectionStateListener</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        jobNodeStorage.removeConnectionStateListener(regCenterConnectionStateListener);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>SchedulerFacade</strong> 终止作业调度时，注销RegCenterConnectionStateListener监听器。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 终止作业调度.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">shutdownInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    listenerManager.removeRegCenterConnectionStateListener();</span><br><span class="line">    </span><br><span class="line">    ... <span class="comment">//省略部分代码</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="3-ExecutorServiceHandlerRegistry"><a href="#3-ExecutorServiceHandlerRegistry" class="headerlink" title="3. ExecutorServiceHandlerRegistry"></a>3. ExecutorServiceHandlerRegistry</h2><p>作业终止时，线程池服务处理器注册表<code>ExecutorServiceHandlerRegistry</code>没有清理。</p>
+<h3 id="3-1-分析"><a href="#3-1-分析" class="headerlink" title="3.1 分析"></a>3.1 分析</h3><h4 id="ExecutorServiceHandlerRegistry"><a href="#ExecutorServiceHandlerRegistry" class="headerlink" title="ExecutorServiceHandlerRegistry"></a>ExecutorServiceHandlerRegistry</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 线程池服务处理器注册表.</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhangliang</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span>(access = AccessLevel.PRIVATE)</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ExecutorServiceHandlerRegistry</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Map&lt;String, ExecutorService&gt; REGISTRY = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取线程池服务.</span></span><br><span class="line"><span class="comment">     * </span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> jobName 作业名称</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> executorServiceHandler 线程池服务处理器</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 线程池服务</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> ExecutorService <span class="title">getExecutorServiceHandler</span><span class="params">(<span class="keyword">final</span> String jobName, <span class="keyword">final</span> ExecutorServiceHandler executorServiceHandler)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!REGISTRY.containsKey(jobName)) &#123;</span><br><span class="line">            REGISTRY.put(jobName, executorServiceHandler.createExecutorService(jobName));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> REGISTRY.get(jobName);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 从注册表中删除该作业线程池服务.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> jobName 作业名称</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">(<span class="keyword">final</span> String jobName)</span> </span>&#123;</span><br><span class="line">        REGISTRY.remove(jobName);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实际上，<code>ExecutorServiceHandlerRegistry.remove(jobName)</code>在目前版本中没有被调用过。</p>
+<h3 id="3-2-改造"><a href="#3-2-改造" class="headerlink" title="3.2 改造"></a>3.2 改造</h3><h4 id="终止作业调度时清理线程池服务处理器注册表"><a href="#终止作业调度时清理线程池服务处理器注册表" class="headerlink" title="终止作业调度时清理线程池服务处理器注册表"></a>终止作业调度时清理线程池服务处理器注册表</h4><ul>
+<li><strong>JobRegistry</strong> 终止任务调度方法中增加线程池服务处理器注册表清理的操作。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 终止任务调度.</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> jobName 作业名称</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">shutdown</span><span class="params">(<span class="keyword">final</span> String jobName)</span> </span>&#123;</span><br><span class="line">    JobScheduleController scheduleController = schedulerMap.remove(jobName);</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">null</span> != scheduleController) &#123;</span><br><span class="line">        scheduleController.shutdown();</span><br><span class="line">    &#125;</span><br><span class="line">    CoordinatorRegistryCenter regCenter = regCenterMap.remove(jobName);</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">null</span> != regCenter) &#123;</span><br><span class="line">        regCenter.evictCacheData(<span class="string">"/"</span> + jobName);</span><br><span class="line">    &#125;</span><br><span class="line">    jobInstanceMap.remove(jobName);</span><br><span class="line">    jobRunningMap.remove(jobName);</span><br><span class="line">    currentShardingTotalCountMap.remove(jobName);</span><br><span class="line">    ExecutorServiceHandlerRegistry.remove(jobName);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="4-Quartz"><a href="#4-Quartz" class="headerlink" title="4. Quartz"></a>4. Quartz</h2><p>作业终止时，quartz相关资源没有释放回收。</p>
+<h3 id="4-1-分析"><a href="#4-1-分析" class="headerlink" title="4.1 分析"></a>4.1 分析</h3><h4 id="JobScheduler-1"><a href="#JobScheduler-1" class="headerlink" title="JobScheduler"></a>JobScheduler</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Scheduler <span class="title">createScheduler</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Scheduler result;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        StdSchedulerFactory factory = <span class="keyword">new</span> StdSchedulerFactory();</span><br><span class="line">        factory.initialize(getBaseQuartzProperties());</span><br><span class="line">        result = factory.getScheduler();</span><br><span class="line">        result.getListenerManager().addTriggerListener(schedulerFacade.newJobTriggerListener());</span><br><span class="line">    &#125; <span class="keyword">catch</span> (<span class="keyword">final</span> SchedulerException ex) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> JobSystemException(ex);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> Properties <span class="title">getBaseQuartzProperties</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Properties result = <span class="keyword">new</span> Properties();</span><br><span class="line">    result.put(<span class="string">"org.quartz.threadPool.class"</span>, org.quartz.simpl.SimpleThreadPool<span class="class">.<span class="keyword">class</span>.<span class="title">getName</span>())</span>;</span><br><span class="line">    result.put(<span class="string">"org.quartz.threadPool.threadCount"</span>, <span class="string">"1"</span>);</span><br><span class="line">    result.put(<span class="string">"org.quartz.scheduler.instanceName"</span>, liteJobConfig.getJobName());</span><br><span class="line">    result.put(<span class="string">"org.quartz.jobStore.misfireThreshold"</span>, <span class="string">"1"</span>);</span><br><span class="line">    <span class="comment">//设置JobShutdownHookPlugin</span></span><br><span class="line">    result.put(<span class="string">"org.quartz.plugin.shutdownhook.class"</span>, JobShutdownHookPlugin<span class="class">.<span class="keyword">class</span>.<span class="title">getName</span>())</span>;</span><br><span class="line">    result.put(<span class="string">"org.quartz.plugin.shutdownhook.cleanShutdown"</span>, Boolean.TRUE.toString());</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="JobShutdownHookPlugin"><a href="#JobShutdownHookPlugin" class="headerlink" title="JobShutdownHookPlugin"></a>JobShutdownHookPlugin</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 作业关闭钩子.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhangliang</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">JobShutdownHookPlugin</span> <span class="keyword">extends</span> <span class="title">ShutdownHookPlugin</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> String jobName;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initialize</span><span class="params">(<span class="keyword">final</span> String name, <span class="keyword">final</span> Scheduler scheduler, <span class="keyword">final</span> ClassLoadHelper classLoadHelper)</span> <span class="keyword">throws</span> SchedulerException </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.initialize(name, scheduler, classLoadHelper);</span><br><span class="line">        jobName = scheduler.getSchedulerName();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">shutdown</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        CoordinatorRegistryCenter regCenter = JobRegistry.getInstance().getRegCenter(jobName);</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> == regCenter) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        LeaderService leaderService = <span class="keyword">new</span> LeaderService(regCenter, jobName);</span><br><span class="line">        <span class="keyword">if</span> (leaderService.isLeader()) &#123;</span><br><span class="line">            leaderService.removeLeader();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">new</span> InstanceService(regCenter, jobName).removeInstance();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="ShutdownHookPlugin"><a href="#ShutdownHookPlugin" class="headerlink" title="ShutdownHookPlugin"></a>ShutdownHookPlugin</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initialize</span><span class="params">(String name, <span class="keyword">final</span> Scheduler scheduler, ClassLoadHelper classLoadHelper)</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> SchedulerException </span>&#123;</span><br><span class="line"></span><br><span class="line">    getLog().info(<span class="string">"Registering Quartz shutdown hook."</span>);</span><br><span class="line"></span><br><span class="line">    Thread t = <span class="keyword">new</span> Thread(<span class="string">"Quartz Shutdown-Hook "</span></span><br><span class="line">            + scheduler.getSchedulerName()) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            getLog().info(<span class="string">"Shutting down Quartz..."</span>);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                scheduler.shutdown(isCleanShutdown());</span><br><span class="line">            &#125; <span class="keyword">catch</span> (SchedulerException e) &#123;</span><br><span class="line">                getLog().info(</span><br><span class="line">                        <span class="string">"Error shutting down Quartz: "</span> + e.getMessage(), e);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    Runtime.getRuntime().addShutdownHook(t);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">### 4.2 改造</span><br><span class="line"></span><br><span class="line">#### 手动终止作业时将对应的shutdownhook线程从JVM中删除</span><br><span class="line"></span><br><span class="line">- **JobShutdownHookPlugin** </span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;java</span><br><span class="line">public final class JobShutdownHookPlugin extends ShutdownHookPlugin &#123;</span><br><span class="line">    </span><br><span class="line">    private String jobName;</span><br><span class="line">    </span><br><span class="line">    private Thread t;</span><br><span class="line">    </span><br><span class="line">    @Override</span><br><span class="line">    public void initialize(final String name, final Scheduler scheduler, final ClassLoadHelper classLoadHelper) throws SchedulerException &#123;</span><br><span class="line">        getLog().info(&quot;Registering Quartz shutdown hook.&quot;);</span><br><span class="line">    </span><br><span class="line">        t &#x3D; new Thread(&quot;Quartz Shutdown-Hook &quot;</span><br><span class="line">                + scheduler.getSchedulerName()) &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void run() &#123;</span><br><span class="line">                getLog().info(&quot;Shutting down Quartz...&quot;);</span><br><span class="line">                try &#123;</span><br><span class="line">                    scheduler.shutdown(isCleanShutdown());</span><br><span class="line">                &#125; catch (SchedulerException e) &#123;</span><br><span class="line">                    getLog().info(</span><br><span class="line">                            &quot;Error shutting down Quartz: &quot; + e.getMessage(), e);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    </span><br><span class="line">        Runtime.getRuntime().addShutdownHook(t);</span><br><span class="line">        jobName &#x3D; scheduler.getSchedulerName();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    @Override</span><br><span class="line">    public void shutdown() &#123;</span><br><span class="line">        CoordinatorRegistryCenter regCenter &#x3D; JobRegistry.getInstance().getRegCenter(jobName);</span><br><span class="line">        if (null &#x3D;&#x3D; regCenter) &#123;</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        LeaderService leaderService &#x3D; new LeaderService(regCenter, jobName);</span><br><span class="line">        if (leaderService.isLeader()) &#123;</span><br><span class="line">            leaderService.removeLeader();</span><br><span class="line">        &#125;</span><br><span class="line">        new InstanceService(regCenter, jobName).removeInstance();</span><br><span class="line">        &#x2F;&#x2F;判断当前执行线程是否是shutdownhook线程，如果不是，则将作业的shutdownhook从JVM中删除</span><br><span class="line">        if (!Thread.currentThread().getName().equals(t.getName())) &#123;</span><br><span class="line">            Runtime.getRuntime().removeShutdownHook(t);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/elastic-job-lite/" rel="tag"># elastic-job-lite</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/11/25/elastic-job/ADOListener/" rel="prev" title="elastic-job-lite issues 整理（二）">
+      <i class="fa fa-chevron-left"></i> elastic-job-lite issues 整理（二）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/20/elastic-job/component-vc/" rel="next" title="elastic-job-lite issues 整理（四）">
+      elastic-job-lite issues 整理（四） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#issues-类型"><span class="nav-number">1.</span> <span class="nav-text">issues 类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-ReconcileService"><span class="nav-number">1.1.</span> <span class="nav-text">1. ReconcileService</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-分析"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1 分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#JobScheduler"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">JobScheduler</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SchedulerFacade"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">SchedulerFacade</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ListenerManager"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">ListenerManager</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ShutdownListenerManager"><span class="nav-number">1.1.1.4.</span> <span class="nav-text">ShutdownListenerManager</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-改造"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2 改造</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-1-消除SchedulerFacade实例的多次创建"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">1.2.1 消除SchedulerFacade实例的多次创建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-2-全局化的ReconcileServiceManager"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">1.2.2. 全局化的ReconcileServiceManager</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-RegistryCenterConnectionStateListener"><span class="nav-number">1.2.</span> <span class="nav-text">2. RegistryCenterConnectionStateListener</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-分析"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SchedulerFacade-1"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">SchedulerFacade</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ListenerManager-1"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">ListenerManager</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-ExecutorServiceHandlerRegistry"><span class="nav-number">1.3.</span> <span class="nav-text">3. ExecutorServiceHandlerRegistry</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-分析"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ExecutorServiceHandlerRegistry"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">ExecutorServiceHandlerRegistry</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-改造"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 改造</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#终止作业调度时清理线程池服务处理器注册表"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">终止作业调度时清理线程池服务处理器注册表</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Quartz"><span class="nav-number">1.4.</span> <span class="nav-text">4. Quartz</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-分析"><span class="nav-number">1.4.1.</span> <span class="nav-text">4.1 分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#JobScheduler-1"><span class="nav-number">1.4.1.1.</span> <span class="nav-text">JobScheduler</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JobShutdownHookPlugin"><span class="nav-number">1.4.1.2.</span> <span class="nav-text">JobShutdownHookPlugin</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ShutdownHookPlugin"><span class="nav-number">1.4.1.3.</span> <span class="nav-text">ShutdownHookPlugin</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Leonidas.Z"
+      src="/images/zlang.jpg">
+  <p class="site-author-name" itemprop="name">Leonidas.Z</p>
+  <div class="site-description" itemprop="description">May the force be with me</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zlang-lst" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zlang-lst" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zlang.lst@gmail.com" title="E-Mail → mailto:zlang.lst@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank">京ICP备19005991号 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zlang</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
