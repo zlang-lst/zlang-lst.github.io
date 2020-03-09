@@ -20,21 +20,21 @@
     var CONFIG = {"hostname":"blog.zlang.tech","root":"/","scheme":"Gemini","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Install 下载 1wget https:&#x2F;&#x2F;github.com&#x2F;prometheus&#x2F;consul_exporter&#x2F;releases&#x2F;download&#x2F;v0.5.0&#x2F;consul_exporter-0.5.0.linux-arm64.tar.gz">
+  <meta name="description" content="Install 下载 1curl --silent --remote-name https:&#x2F;&#x2F;releases.hashicorp.com&#x2F;consul&#x2F;1.5.1&#x2F;consul_1.5.1_linux_amd64.zip">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Consul Exporter部署">
-<meta property="og:url" content="http://blog.zlang.tech/2019/08/29/consul/consul-exporter/index.html">
+<meta property="og:title" content="Consul集群部署">
+<meta property="og:url" content="http://blog.zlang.tech/2019/08/17/consul/consul-deploy/index.html">
 <meta property="og:site_name" content="Zlang&#39;s T.B">
-<meta property="og:description" content="Install 下载 1wget https:&#x2F;&#x2F;github.com&#x2F;prometheus&#x2F;consul_exporter&#x2F;releases&#x2F;download&#x2F;v0.5.0&#x2F;consul_exporter-0.5.0.linux-arm64.tar.gz">
+<meta property="og:description" content="Install 下载 1curl --silent --remote-name https:&#x2F;&#x2F;releases.hashicorp.com&#x2F;consul&#x2F;1.5.1&#x2F;consul_1.5.1_linux_amd64.zip">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2019-08-29T03:00:00.000Z">
-<meta property="article:modified_time" content="2020-03-08T11:39:07.722Z">
+<meta property="article:published_time" content="2019-08-16T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-03-09T01:55:53.441Z">
 <meta property="article:author" content="Leonidas.Z">
 <meta property="article:tag" content="registry">
 <meta property="article:tag" content="consul">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://blog.zlang.tech/2019/08/29/consul/consul-exporter/">
+<link rel="canonical" href="http://blog.zlang.tech/2019/08/17/consul/consul-deploy/">
 
 
 <script id="page-configurations">
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title>Consul Exporter部署 | Zlang's T.B</title>
+  <title>Consul集群部署 | Zlang's T.B</title>
   
 
 
@@ -187,7 +187,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://blog.zlang.tech/2019/08/29/consul/consul-exporter/">
+    <link itemprop="mainEntityOfPage" href="http://blog.zlang.tech/2019/08/17/consul/consul-deploy/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/zlang.jpg">
@@ -200,7 +200,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Consul Exporter部署
+          Consul集群部署
         </h1>
 
         <div class="post-meta">
@@ -210,14 +210,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-08-29 11:00:00" itemprop="dateCreated datePublished" datetime="2019-08-29T11:00:00+08:00">2019-08-29</time>
+              <time title="创建时间：2019-08-17 00:00:00" itemprop="dateCreated datePublished" datetime="2019-08-17T00:00:00+08:00">2019-08-17</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-08 19:39:07" itemprop="dateModified" datetime="2020-03-08T19:39:07+08:00">2020-03-08</time>
+                <time title="修改时间：2020-03-09 09:55:53" itemprop="dateModified" datetime="2020-03-09T09:55:53+08:00">2020-03-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -242,13 +242,16 @@
       
         <h2 id="Install"><a href="#Install" class="headerlink" title="Install"></a>Install</h2><ul>
 <li><p>下载</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/prometheus/consul_exporter/releases/download/v0.5.0/consul_exporter-0.5.0.linux-arm64.tar.gz</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl --silent --remote-name https://releases.hashicorp.com/consul/1.5.1/consul_1.5.1_linux_amd64.zip</span><br></pre></td></tr></table></figure>
 <a id="more"></a>
 </li>
 <li><p>解压</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf consul_exporter-0.5.0.linux-arm64.tar.gz</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">unzip consul_1.5.1_linux_amd64.zip</span><br></pre></td></tr></table></figure></li>
 <li><p>初始化</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mv consul_exporter /usr/<span class="built_in">local</span>/bin</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mv consul /usr/<span class="built_in">local</span>/bin</span><br><span class="line">mkdir /etc/consul.d</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>测试</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">consul --version</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>注意</p>
 </li>
@@ -258,14 +261,42 @@
 
 
 <h2 id="systemd配置"><a href="#systemd配置" class="headerlink" title="systemd配置"></a>systemd配置</h2><ul>
-<li>/etc/systemd/system/路径下创建consul_exporter.service文件</li>
+<li>/etc/systemd/system/路径下创建consul.service文件</li>
 </ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">touch /etc/systemd/system/consul_exporter.service</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">touch /etc/systemd/system/consul.service</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>/etc/systemd/system/consul_exporter.service文件中添加配置<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=<span class="string">"Consul Exporter"</span></span><br><span class="line">Documentation=https://github.com/prometheus/consul_exporter/</span><br><span class="line">Requires=network-online.target</span><br><span class="line">After=network-online.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">User=root</span><br><span class="line">ExecStart=/usr/<span class="built_in">local</span>/bin/consul_exporter --consul.timeout=5000ms --consul.server=registry.ddcloud.api:8500/ </span><br><span class="line">KillMode=process</span><br><span class="line">Restart=on-failure</span><br><span class="line">LimitNOFILE=65536</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure></li>
-</ul>
+<li>/etc/systemd/system/consul.service文件中添加配置<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=<span class="string">"Consul"</span></span><br><span class="line">Documentation=https://www.consul.io/</span><br><span class="line">Requires=network-online.target</span><br><span class="line">After=network-online.target</span><br><span class="line">ConditionFileNotEmpty=/etc/consul.d/consul.hcl</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">User=root</span><br><span class="line">ExecStart=/usr/<span class="built_in">local</span>/bin/consul agent -config-dir=/etc/consul.d/</span><br><span class="line">ExecReload=/usr/<span class="built_in">local</span>/bin/consul reload</span><br><span class="line">KillMode=process</span><br><span class="line">Restart=on-failure</span><br><span class="line">LimitNOFILE=65536</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
 
+</li>
+</ul>
+<h2 id="Consul配置文件"><a href="#Consul配置文件" class="headerlink" title="Consul配置文件"></a>Consul配置文件</h2><h3 id="General-configuration"><a href="#General-configuration" class="headerlink" title="General configuration"></a>General configuration</h3><ul>
+<li><p>创建consul配置目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir /etc/consul.d</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>/etc/consul.d/路径下创建consul通用配置文件consul.hcl</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">touch /etc/consul.d/consul.hcl</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>consul.hcl中添加配置</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## Servcer配置</span></span><br><span class="line">datacenter = <span class="string">"dc1"</span></span><br><span class="line">node_name = <span class="string">"svr1"</span></span><br><span class="line">data_dir = <span class="string">"/tmp/consul"</span></span><br><span class="line">client_addr = <span class="string">"0.0.0.0"</span></span><br><span class="line">retry_join = [<span class="string">"10.255.242.230"</span>,<span class="string">"10.255.242.231"</span>]</span><br><span class="line">performance &#123;</span><br><span class="line">  raft_multiplier = 5</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## Client配置</span></span><br><span class="line">datacenter = <span class="string">"dc1"</span></span><br><span class="line">node_name = <span class="string">"clt1"</span></span><br><span class="line">data_dir = <span class="string">"/tmp/consul"</span></span><br><span class="line">client_addr = <span class="string">"0.0.0.0"</span></span><br><span class="line"><span class="comment">#log_file = "/tmp/consul/consul.log"</span></span><br><span class="line">retry_join = [<span class="string">"10.255.242.229"</span>,<span class="string">"10.255.242.230"</span>,<span class="string">"10.255.242.231"</span>]</span><br><span class="line">performance &#123;</span><br><span class="line">  raft_multiplier = 5</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Server-configuration"><a href="#Server-configuration" class="headerlink" title="Server configuration"></a>Server configuration</h3><ul>
+<li><p>/etc/consul.d/路径下创建consul server配置文件server.hcl</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">touch /etc/consul.d/server.hcl</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>server.hcl中添加配置</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">server = <span class="literal">true</span></span><br><span class="line">bootstrap_expect = 3</span><br><span class="line">ui = <span class="literal">true</span></span><br><span class="line">telemetry &#123; </span><br><span class="line">  disable_hostname = <span class="literal">true</span>,</span><br><span class="line">  prometheus_retention_time = <span class="string">"30m"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<blockquote>
+<p>注意：开启consul server的telemetry，需要配置disable_hostname = true以及设置prometheus_retention_time。Prometheus可以通过”<a href="http://consulServerIp:8500/v1/agent/metrics?format=prometheus&quot;来scrape指标。" target="_blank" rel="noopener">http://consulServerIp:8500/v1/agent/metrics?format=prometheus&quot;来scrape指标。</a> 参见<a href="https://www.consul.io/docs/agent/options.html#telemetry" target="_blank" rel="noopener">Consul Telemetry</a></p>
+</blockquote>
+<h3 id="测试命令"><a href="#测试命令" class="headerlink" title="测试命令"></a>测试命令</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">consul operator raft list-peers</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -284,12 +315,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2019/08/27/consul/consul-deploy/" rel="prev" title="Consul集群部署">
-      <i class="fa fa-chevron-left"></i> Consul集群部署
+    <a href="/2019/08/15/consul/consul/" rel="prev" title="Consul">
+      <i class="fa fa-chevron-left"></i> Consul
     </a></div>
       <div class="post-nav-item">
-    <a href="/2019/10/17/elastic-job/failover/" rel="next" title="elastic-job-lite issues 整理（一）">
-      elastic-job-lite issues 整理（一） <i class="fa fa-chevron-right"></i>
+    <a href="/2019/08/19/consul/consul-exporter/" rel="next" title="Consul Exporter部署">
+      Consul Exporter部署 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -350,7 +381,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Install"><span class="nav-number">1.</span> <span class="nav-text">Install</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#systemd配置"><span class="nav-number">2.</span> <span class="nav-text">systemd配置</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Install"><span class="nav-number">1.</span> <span class="nav-text">Install</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#systemd配置"><span class="nav-number">2.</span> <span class="nav-text">systemd配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Consul配置文件"><span class="nav-number">3.</span> <span class="nav-text">Consul配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#General-configuration"><span class="nav-number">3.1.</span> <span class="nav-text">General configuration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Server-configuration"><span class="nav-number">3.2.</span> <span class="nav-text">Server configuration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试命令"><span class="nav-number">3.3.</span> <span class="nav-text">测试命令</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -366,7 +397,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
